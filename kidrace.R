@@ -1,18 +1,21 @@
-# do setup
+## SETUP
 setwd("~/Classes/DSS")
 library(dplyr)
 library(stringr) 
 
-# get the data
+## GET THE DATA
+# 2014 results
 #fileURL <- "http://www.besttimescct.com/results/Mercedes14_kids.txt"
+# 2015 results
 fileURL <- "http://www.besttimescct.com/results/Mercedes15_kids.txt"
 
-
+# download the file
 download.file(fileURL, destfile = "kidrace.txt", method = "curl")
 
 kidrace <- read.csv("kidrace.txt", sep = "|", header = TRUE, skip = 4,blank.lines.skip = TRUE,na.strings = "?", 
                 comment.char="", check.names = F, stringsAsFactors = F, quote="\"")
 
+## CLEAN THE DATA
 # identify rows to be removed
 text_rows <- grepl("[A-Z]", kidrace[,1])
 asterisk_rows <- grepl("==", kidrace[,1])
@@ -24,6 +27,7 @@ class(kidrace$v1)
 #clean up column names for now
 colnames(kidrace) <- c("v1", "v2", "v3", "v4", "v5")
 
+## ORGANIZE THE DATA
 #stack columns
 stacked_kidrace <- c(kidrace$v1, kidrace$v2,kidrace$v3,kidrace$v4,kidrace$v5)
 stacked_kidrace <- str_trim(stacked_kidrace)
@@ -75,6 +79,7 @@ clean_rep_data <- rep_data[clean,]
 clean_rep_data <- mutate(clean_rep_data, rank = min_rank(min_dec))
 clean_rep_data <- mutate(clean_rep_data, pct_rank = percent_rank(min_dec)*100)
 
+# LOOK AT RESULTS
 # Kid's positions
 #Grace
 filter(clean_rep_data, bib == "2478")
@@ -85,10 +90,7 @@ filter(clean_rep_data, bib == "2409")
 #Nate
 filter(clean_rep_data, bib == "2410")
 
-# calc 5 number
-summary(clean_rep_data)
-
-# create a histogram
+# CREATE HISTOGRAM
 hist(rep_data$min_dec, breaks = 80, border = "azure", lty="solid", col = "azure3",
      main = "2015 Kids Mercedes Marathon \n 1 Mile Run Times",
      xlab = "minutes")
@@ -112,7 +114,7 @@ text(25, 160, paste("Nate rank = ", select(filter(clean_rep_data, bib == "2410")
 
 text(25, 100, paste("Total runners = ", length(clean_rep_data$min_dec)))
 
-# create boxplot
+# CREATE BOXPLOT
 boxplot(clean_rep_data$min_dec, col = "azure3" ,main = "Histogram of 1 Mile Run Times", ylab = "minutes" )
 abline(h = 10.35, col = "darkgreen") 
 abline(h = 6.95, col = "blue") 
