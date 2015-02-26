@@ -113,7 +113,8 @@ text(25, 160, paste("Nate rank = ", select(filter(clean_rep_data, bib == "2410")
                     round(select(filter(clean_rep_data, bib == "2410"), pct_rank), digits = 2))) 
 
 text(25, 100, paste("Total runners = ", length(clean_rep_data$min_dec)))
-
+dev.copy(png, file="plot1.png", height=480, width=480)
+dev.off()
 # CREATE BOXPLOT
 boxplot(clean_rep_data$min_dec, col = "azure3" ,main = "Histogram of 1 Mile Run Times", ylab = "minutes" )
 abline(h = 10.35, col = "darkgreen") 
